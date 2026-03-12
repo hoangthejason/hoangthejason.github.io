@@ -4,8 +4,18 @@ import PostCard from '../../components/PostCard.astro';
 import { getSortedCollection } from '../../lib/content';
 
 const notes = await getSortedCollection('courses');
-const groups = Object.groupBy(notes, (item) => item.data.course);
-const courses = Object.entries(groups).sort(([left], [right]) => left.localeCompare(right));
+
+// group courses manually (replace Object.groupBy)
+const groups = notes.reduce((acc, item) => {
+  const key = item.data.course || "Other";
+  if (!acc[key]) acc[key] = [];
+  acc[key].push(item);
+  return acc;
+}, {});
+
+const courses = Object.entries(groups).sort(([left], [right]) =>
+  left.localeCompare(right)
+);
 ---
 
 <BaseLayout title="Courses" description="Structured course notes, assignments, and summaries for core computer science and mathematics courses.">

@@ -4,7 +4,17 @@ import PostCard from '../../components/PostCard.astro';
 import { getSortedCollection } from '../../lib/content';
 
 const notes = await getSortedCollection('research');
-const groups = Object.groupBy(notes, (item) => item.data.topic);
+const groups = notes.reduce((acc, item) => {
+  const key = item.data.topic || 'Other';
+
+  if (!acc[key]) {
+    acc[key] = [];
+  }
+
+  acc[key].push(item);
+
+  return acc;
+}, {});
 const topics = Object.entries(groups).sort(([left], [right]) => left.localeCompare(right));
 ---
 

@@ -3,9 +3,9 @@ import BaseLayout from '../../components/BaseLayout.astro';
 import NotebookViewer from '../../components/NotebookViewer.astro';
 import CodeBlockEnhancer from '../../components/CodeBlockEnhancer.astro';
 
-const modules = import.meta.glob('../../generated/notebooks/*.json', { eager: true });
-
 export async function getStaticPaths() {
+  const modules = import.meta.glob('../../generated/notebooks/*.json', { eager: true });
+
   return Object.values(modules).map((module) => ({
     params: { slug: module.default.slug },
     props: { notebook: module.default }
