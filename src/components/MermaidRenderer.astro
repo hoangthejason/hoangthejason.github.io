@@ -1,0 +1,22 @@
+<script>
+  const renderMermaid = async () => {
+    if (!document.querySelector('.mermaid')) return;
+
+    const { default: mermaid } = await import('mermaid');
+    const mode = document.documentElement.classList.contains('dark') ? 'dark' : 'neutral';
+
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: mode,
+      securityLevel: 'loose',
+      fontFamily: 'Inter, system-ui, sans-serif'
+    });
+
+    await mermaid.run({
+      querySelector: '.mermaid'
+    });
+  };
+
+  renderMermaid();
+  window.addEventListener('theme:changed', () => window.location.reload());
+</script>

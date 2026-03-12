@@ -1,0 +1,80 @@
+---
+import '../styles/global.css';
+import Navbar from './Navbar.astro';
+import Footer from './Footer.astro';
+import ReadingProgress from './ReadingProgress.astro';
+import BackToTop from './BackToTop.astro';
+import PlausibleAnalytics from './PlausibleAnalytics.astro';
+import { SITE } from '../site.config';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  noIndex?: boolean;
+}
+
+const {
+  title = SITE.title,
+  description = SITE.description,
+  image = SITE.ogImage,
+  noIndex = false
+} = Astro.props;
+
+const pageTitle = title === SITE.title ? title : `${title} | ${SITE.title}`;
+const canonical = new URL(Astro.url.pathname, SITE.url).toString();
+const imageUrl = new URL(image, SITE.url).toString();
+---
+
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#0B3C5D" />
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" type="application/rss+xml" title={`${SITE.title} RSS`} href="/rss.xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={SITE.title} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={imageUrl} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={imageUrl} />
+    {noIndex && <meta name="robots" content="noindex,nofollow" />}
+
+    <script is:inline>
+      (() => {
+        const stored = localStorage.getItem('theme');
+        const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const mode = stored || (systemDark ? 'dark' : 'light');
+        document.documentElement.classList.toggle('dark', mode === 'dark');
+        document.documentElement.dataset.theme = mode;
+      })();
+    </script>
+
+    <slot name="head" />
+  </head>
+  <body class="min-h-screen bg-[var(--color-bg)] text-[var(--color-text)] antialiased">
+    <a
+      href="#content"
+      class="sr-only-focusable fixed left-4 top-4 z-[60] rounded-lg bg-[var(--color-brand)] px-3 py-2 text-sm text-white"
+    >
+      Skip to content
+    </a>
+    <ReadingProgress />
+    <Navbar currentPath={Astro.url.pathname} />
+    <main id="content" class="mx-auto w-full max-w-6xl px-4 pb-16 pt-10 md:px-6">
+      <slot />
+    </main>
+    <Footer />
+    <BackToTop />
+    <PlausibleAnalytics />
+  </body>
+</html>

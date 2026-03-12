@@ -1,0 +1,39 @@
+---
+import BaseLayout from '../../components/BaseLayout.astro';
+import PostCard from '../../components/PostCard.astro';
+import { getSortedCollection } from '../../lib/content';
+
+const notes = await getSortedCollection('courses');
+const groups = Object.groupBy(notes, (item) => item.data.course);
+const courses = Object.entries(groups).sort(([left], [right]) => left.localeCompare(right));
+---
+
+<BaseLayout title="Courses" description="Structured course notes, assignments, and summaries for core computer science and mathematics courses.">
+  <section>
+    <p class="text-sm uppercase tracking-[0.18em] text-[var(--color-muted)]">Courses</p>
+    <h1 class="mt-3 text-4xl font-semibold tracking-tight md:text-5xl">Lecture notes and summaries</h1>
+    <p class="mt-4 max-w-3xl text-lg leading-8 text-[var(--color-muted)]">
+      Organized notes for coursework, revision, and long-term reference.
+    </p>
+
+    <div class="mt-10 space-y-10">
+      {courses.map(([course, entries]) => (
+        <section>
+          <h2 class="text-2xl font-semibold">{course}</h2>
+          <div class="mt-4 space-y-4">
+            {entries?.map((entry) => (
+              <PostCard
+                href={`/courses/${entry.slug}`}
+                title={entry.data.title}
+                description={entry.data.description}
+                date={entry.data.date}
+                tags={entry.data.tags}
+                meta={entry.data.kind}
+              />
+            ))}
+          </div>
+        </section>
+      ))}
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,23 @@
+<button
+  type="button"
+  id="back-to-top"
+  class="fixed bottom-5 right-5 z-40 hidden rounded-full border border-[var(--color-border)] bg-[var(--color-bg)] px-3 py-2 text-sm text-[var(--color-text)] shadow-lg transition hover:border-[var(--color-accent)]"
+  aria-label="Back to top"
+>
+  ↑ Top
+</button>
+
+<script is:inline>
+  const button = document.getElementById('back-to-top');
+
+  const updateVisibility = () => {
+    button.classList.toggle('hidden', window.scrollY < 400);
+  };
+
+  button?.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  document.addEventListener('scroll', updateVisibility, { passive: true });
+  updateVisibility();
+</script>

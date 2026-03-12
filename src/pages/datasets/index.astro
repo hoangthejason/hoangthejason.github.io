@@ -1,0 +1,30 @@
+---
+import BaseLayout from '../../components/BaseLayout.astro';
+import PostCard from '../../components/PostCard.astro';
+import { getSortedCollection } from '../../lib/content';
+
+const notes = await getSortedCollection('datasets');
+---
+
+<BaseLayout title="Datasets" description="Dataset notes documenting task scope, size, download links, and caveats for reuse.">
+  <section>
+    <p class="text-sm uppercase tracking-[0.18em] text-[var(--color-muted)]">Datasets</p>
+    <h1 class="mt-3 text-4xl font-semibold tracking-tight md:text-5xl">Dataset notes</h1>
+    <p class="mt-4 max-w-3xl text-lg leading-8 text-[var(--color-muted)]">
+      Quick reference pages for datasets, tasks, scale, download locations, and practical caveats.
+    </p>
+
+    <div class="mt-10 space-y-4">
+      {notes.map((entry) => (
+        <PostCard
+          href={`/datasets/${entry.slug}`}
+          title={entry.data.title}
+          description={entry.data.description}
+          date={entry.data.date}
+          tags={entry.data.tags}
+          meta={entry.data.size}
+        />
+      ))}
+    </div>
+  </section>
+</BaseLayout>

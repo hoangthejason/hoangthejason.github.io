@@ -1,0 +1,102 @@
+<div data-search-root class="relative hidden min-w-[18rem] lg:block">
+  <label class="sr-only" for="site-search">Search the site</label>
+  <input
+    id="site-search"
+    type="search"
+    placeholder="Search notes and posts"
+    class="h-10 w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)] px-3 text-sm text-[var(--color-text)] outline-none ring-0 transition placeholder:text-[var(--color-muted)] focus:border-[var(--color-accent)]"
+    autocomplete="off"
+    spellcheck="false"
+    aria-autocomplete="list"
+    aria-controls="site-search-results"
+    aria-expanded="false"
+  />
+  <div
+    id="site-search-results"
+    class="search-results absolute left-0 right-0 top-[calc(100%+0.5rem)] z-30 hidden max-h-[26rem] overflow-auto rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] p-2 shadow-2xl"
+    role="listbox"
+    aria-label="Search results"
+  ></div>
+</div>
+
+<script is:inline>
+  const searchRoot = document.currentScript?.previousElementSibling;
+  if (searchRoot) {
+    const input = searchRoot.querySelector('#site-search');
+    const resultsBox = searchRoot.querySelector('#site-search-results');
+    let pagefind = null;
+    let timer = null;
+
+    const renderEmptyState = (message) => {
+      resultsBox.innerHTML = `<p class="px-3 py-2 text-sm text-[var(--color-muted)]">${message}</p>`;
+      resultsBox.classList.remove('hidden');
+      input.setAttribute('aria-expanded', 'true');
+    };
+
+    const closeResults = () => {
+      resultsBox.classList.add('hidden');
+      resultsBox.innerHTML = '';
+      input.setAttribute('aria-expanded', 'false');
+    };
+
+    const loadPagefind = async () => {
+      if (pagefind) return pagefind;
+      pagefind = await import('/pagefind/pagefind.js');
+      return pagefind;
+    };
+
+    const search = async (query) => {
+      if (!query.trim()) {
+        closeResults();
+        return;
+      }
+
+      renderEmptyState('Searching…');
+
+      try {
+        const pf = await loadPagefind();
+        const response = await pf.search(query, { limit: 8 });
+        const items = await Promise.all(response.results.slice(0, 8).map((item) => item.data()));
+
+        if (!items.length) {
+          renderEmptyState('No results found.');
+          return;
+        }
+
+        resultsBox.innerHTML = items
+          .map(
+            (item) => `
+              <a
+                href="${item.url}"
+                class="block rounded-lg px-3 py-2 transition hover:bg-[var(--color-surface)] focus:bg-[var(--color-surface)]"
+                role="option"
+              >
+                <div class="text-sm font-semibold text-[var(--color-text)]">${item.meta.title || item.url}</div>
+                <div class="mt-1 text-xs uppercase tracking-[0.12em] text-[var(--color-muted)]">${item.meta.section || 'Page'}</div>
+                <p class="mt-1 text-sm text-[var(--color-muted)]">${item.excerpt || ''}</p>
+              </a>
+            `
+          )
+          .join('');
+        resultsBox.classList.remove('hidden');
+        input.setAttribute('aria-expanded', 'true');
+      } catch (error) {
+        renderEmptyState('Search index is available after production build.');
+      }
+    };
+
+    input?.addEventListener('input', (event) => {
+      const value = event.target.value;
+      window.clearTimeout(timer);
+      timer = window.setTimeout(() => search(value), 120);
+    });
+
+    input?.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') closeResults();
+    });
+
+    document.addEventListener('click', (event) => {
+      if (!searchRoot.contains(event.target)) closeResults();
+    });
+  }
+</script>

@@ -1,0 +1,21 @@
+<div
+  aria-hidden="true"
+  class="fixed inset-x-0 top-0 z-50 h-1 origin-left bg-[var(--color-brand)]"
+  id="reading-progress"
+  style="transform: scaleX(0);"
+></div>
+
+<script is:inline>
+  const bar = document.getElementById('reading-progress');
+
+  const updateProgress = () => {
+    const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+    const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    const progress = scrollHeight > 0 ? scrollTop / scrollHeight : 0;
+    bar.style.transform = `scaleX(${Math.min(1, Math.max(0, progress))})`;
+  };
+
+  document.addEventListener('scroll', updateProgress, { passive: true });
+  window.addEventListener('resize', updateProgress);
+  updateProgress();
+</script>

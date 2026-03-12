@@ -1,0 +1,76 @@
+---
+import BaseLayout from '../components/BaseLayout.astro';
+import PostCard from '../components/PostCard.astro';
+import { getEntry, render } from 'astro:content';
+import { getLatestBlogPosts, getFeaturedNotes, getCollectionLabel } from '../lib/content';
+
+const home = await getEntry('pages', 'home');
+const { Content: HomeContent } = home ? await render(home) : { Content: null };
+const latestPosts = await getLatestBlogPosts(3);
+const featuredNotes = await getFeaturedNotes(4);
+---
+
+<BaseLayout title={home?.data.title || 'Home'} description={home?.data.description}>
+  <section class="max-w-4xl">
+    <p class="text-sm uppercase tracking-[0.18em] text-[var(--color-muted)]">Academic notebook</p>
+    <h1 class="mt-3 text-4xl font-semibold tracking-tight md:text-5xl">
+      {home?.data.intro || 'A minimalist, text-first space for technical writing and research notes.'}
+    </h1>
+    {HomeContent && (
+      <div class="prose prose-neutral mt-6 max-w-none">
+        <HomeContent />
+      </div>
+    )}
+  </section>
+
+  <section class="mt-14 grid gap-10 lg:grid-cols-[1.15fr_0.85fr]">
+    <div>
+      <div class="flex items-center justify-between gap-4">
+        <h2 class="text-3xl font-semibold">Latest blog posts</h2>
+        <a href="/blog" class="text-sm font-medium text-[var(--color-brand)]">View all</a>
+      </div>
+      <div class="mt-6 space-y-4">
+        {latestPosts.map((post) => (
+          <PostCard
+            href={`/blog/${post.slug}`}
+            title={post.data.title}
+            description={post.data.description}
+            date={post.data.date}
+            tags={post.data.tags}
+            meta={post.data.category}
+          />
+        ))}
+      </div>
+    </div>
+
+    <div>
+      <h2 class="text-3xl font-semibold">Research interests</h2>
+      <ul class="mt-6 space-y-3">
+        {(home?.data.researchInterests || []).map((item) => (
+          <li class="rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-3 text-sm leading-7 text-[var(--color-text)]">
+            {item}
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="mt-14">
+    <div class="flex items-center justify-between gap-4">
+      <h2 class="text-3xl font-semibold">Featured notes</h2>
+      <a href="/research" class="text-sm font-medium text-[var(--color-brand)]">Explore research</a>
+    </div>
+    <div class="mt-6 grid gap-4 md:grid-cols-2">
+      {featuredNotes.map(({ collection, entry }) => (
+        <PostCard
+          href={`/${collection}/${entry.slug}`}
+          title={entry.data.title}
+          description={entry.data.description}
+          date={entry.data.date}
+          tags={entry.data.tags}
+          meta={getCollectionLabel(collection)}
+        />
+      ))}
+    </div>
+  </section>
+</BaseLayout>

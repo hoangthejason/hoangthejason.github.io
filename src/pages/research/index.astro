@@ -1,0 +1,39 @@
+---
+import BaseLayout from '../../components/BaseLayout.astro';
+import PostCard from '../../components/PostCard.astro';
+import { getSortedCollection } from '../../lib/content';
+
+const notes = await getSortedCollection('research');
+const groups = Object.groupBy(notes, (item) => item.data.topic);
+const topics = Object.entries(groups).sort(([left], [right]) => left.localeCompare(right));
+---
+
+<BaseLayout title="Research" description="Research notes grouped by topic, with an emphasis on NLP, multilingual systems, and language technologies.">
+  <section>
+    <p class="text-sm uppercase tracking-[0.18em] text-[var(--color-muted)]">Research</p>
+    <h1 class="mt-3 text-4xl font-semibold tracking-tight md:text-5xl">Topic-based research notes</h1>
+    <p class="mt-4 max-w-3xl text-lg leading-8 text-[var(--color-muted)]">
+      Working notes, literature synthesis, experimental ideas, and implementation references organized by topic.
+    </p>
+
+    <div class="mt-10 space-y-10">
+      {topics.map(([topic, entries]) => (
+        <section>
+          <h2 class="text-2xl font-semibold">{topic}</h2>
+          <div class="mt-4 space-y-4">
+            {entries?.map((entry) => (
+              <PostCard
+                href={`/research/${entry.slug}`}
+                title={entry.data.title}
+                description={entry.data.description}
+                date={entry.data.date}
+                tags={entry.data.tags}
+                meta={entry.data.topic}
+              />
+            ))}
+          </div>
+        </section>
+      ))}
+    </div>
+  </section>
+</BaseLayout>

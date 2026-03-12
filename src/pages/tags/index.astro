@@ -1,0 +1,23 @@
+---
+import BaseLayout from '../../components/BaseLayout.astro';
+import { getAllTags } from '../../lib/content';
+
+const tags = await getAllTags();
+---
+
+<BaseLayout title="Tags" description="Browse all tags across blog posts, course notes, research notes, paper notes, and dataset notes.">
+  <section>
+    <p class="text-sm uppercase tracking-[0.18em] text-[var(--color-muted)]">Tags</p>
+    <h1 class="mt-3 text-4xl font-semibold tracking-tight md:text-5xl">All tags</h1>
+    <div class="mt-8 flex flex-wrap gap-3">
+      {tags.map((tag) => (
+        <a
+          href={`/tags/${tag.slug}`}
+          class="inline-flex rounded-full border border-[var(--color-border)] px-4 py-2 text-sm text-[var(--color-text)] transition hover:border-[var(--color-accent)]"
+        >
+          {tag.name} <span class="ml-2 text-[var(--color-muted)]">({tag.count})</span>
+        </a>
+      ))}
+    </div>
+  </section>
+</BaseLayout>

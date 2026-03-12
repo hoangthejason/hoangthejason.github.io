@@ -1,0 +1,42 @@
+---
+title: Math in Markdown without compromising readability
+description: A practical pattern for combining KaTeX, Markdown, and long-form technical writing.
+date: 2026-03-08
+category: machine-learning
+tags:
+  - math
+  - markdown
+  - katex
+comments: true
+lang: en-US
+---
+
+A technical site should make equations readable without turning every page into a PDF surrogate.
+
+## Separating ideas from notation
+
+For binary classification, the decision boundary is often written as
+
+$$
+w^T x + b = 0
+$$
+
+That notation is compact, but explanation matters more than typography alone.
+
+## A practical rule
+
+State the role of each term in prose before writing the equation. Readers remember semantics better than isolated symbols.
+
+:::tip
+Use display math for structure and inline math for local clarification.
+:::
+
+## Example
+
+If the sign of $w^T x + b$ determines the predicted class, then the surface defined by
+
+$$
+w^T x + b = 0
+$$
+
+acts as a separator between the two regions.

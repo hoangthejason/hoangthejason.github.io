@@ -1,0 +1,28 @@
+---
+import BaseLayout from '../../components/BaseLayout.astro';
+import PostCard from '../../components/PostCard.astro';
+
+const modules = import.meta.glob('../../generated/notebooks/*.json', { eager: true });
+const notebooks = Object.values(modules)
+  .map((module) => module.default)
+  .sort((left, right) => new Date(right.date || 0).getTime() - new Date(left.date || 0).getTime());
+---
+
+<BaseLayout title="Notebooks" description="Static rendering of Jupyter notebooks, including markdown cells, code cells, and outputs.">
+  <section>
+    <p class="text-sm uppercase tracking-[0.18em] text-[var(--color-muted)]">Notebooks</p>
+    <h1 class="mt-3 text-4xl font-semibold tracking-tight md:text-5xl">Jupyter notebook archive</h1>
+    <div class="mt-10 space-y-4">
+      {notebooks.map((notebook) => (
+        <PostCard
+          href={`/notebooks/${notebook.slug}`}
+          title={notebook.title}
+          description={notebook.description}
+          date={notebook.date ? new Date(notebook.date) : undefined}
+          tags={notebook.tags}
+          meta={notebook.section || 'Notebook'}
+        />
+      ))}
+    </div>
+  </section>
+</BaseLayout>

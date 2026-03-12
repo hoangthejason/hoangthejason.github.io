@@ -1,0 +1,30 @@
+---
+import BaseLayout from '../../components/BaseLayout.astro';
+import PostCard from '../../components/PostCard.astro';
+import { getSortedCollection } from '../../lib/content';
+
+const posts = await getSortedCollection('blog');
+---
+
+<BaseLayout title="Blog" description="Long-form posts on machine learning, programming, research process, and personal technical notes.">
+  <section>
+    <p class="text-sm uppercase tracking-[0.18em] text-[var(--color-muted)]">Blog</p>
+    <h1 class="mt-3 text-4xl font-semibold tracking-tight md:text-5xl">Essays, notes, and technical writing</h1>
+    <p class="mt-4 max-w-3xl text-lg leading-8 text-[var(--color-muted)]">
+      A text-first archive for machine learning, programming, research, and occasional personal reflections.
+    </p>
+
+    <div class="mt-10 space-y-4">
+      {posts.map((post) => (
+        <PostCard
+          href={`/blog/${post.slug}`}
+          title={post.data.title}
+          description={post.data.description}
+          date={post.data.date}
+          tags={post.data.tags}
+          meta={post.data.category}
+        />
+      ))}
+    </div>
+  </section>
+</BaseLayout>

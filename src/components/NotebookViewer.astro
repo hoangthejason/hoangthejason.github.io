@@ -1,0 +1,66 @@
+---
+interface NotebookOutput {
+  outputType: 'text' | 'error' | 'image';
+  text?: string;
+  mimeType?: string;
+  data?: string;
+}
+
+interface NotebookCell {
+  cellType: 'markdown' | 'code';
+  html?: string;
+  source?: string;
+  language?: string;
+  outputs?: NotebookOutput[];
+}
+
+interface Props {
+  cells: NotebookCell[];
+}
+
+const { cells } = Astro.props;
+---
+
+<div class="not-prose space-y-4">
+  {cells.map((cell) => (
+    <section class="notebook-cell rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg)] p-4">
+      {cell.cellType === 'markdown' ? (
+        <div class="prose prose-neutral max-w-none" set:html={cell.html}></div>
+      ) : (
+        <div class="space-y-4">
+          <pre class="overflow-x-auto rounded-xl border border-[var(--color-border)] bg-[#111827] p-4 text-sm text-slate-100">
+            <code class={`language-${cell.language || 'text'}`}>{cell.source}</code>
+          </pre>
+
+          {(cell.outputs || []).length > 0 && (
+            <div class="space-y-3 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4">
+              <p class="text-xs uppercase tracking-[0.16em] text-[var(--color-muted)]">Outputs</p>
+              {cell.outputs?.map((output) => (
+                <>
+                  {output.outputType === 'text' && (
+                    <pre class="overflow-x-auto rounded-lg bg-[var(--color-bg)] p-3 text-sm text-[var(--color-text)]">
+                      {output.text}
+                    </pre>
+                  )}
+                  {output.outputType === 'error' && (
+                    <pre class="overflow-x-auto rounded-lg border border-red-300 bg-red-50 p-3 text-sm text-red-800 dark:border-red-900 dark:bg-red-950/40 dark:text-red-300">
+                      {output.text}
+                    </pre>
+                  )}
+                  {output.outputType === 'image' && (
+                    <img
+                      class="notebook-output-image"
+                      src={`data:${output.mimeType};base64,${output.data}`}
+                      alt="Notebook output"
+                      loading="lazy"
+                    />
+                  )}
+                </>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+    </section>
+  ))}
+</div>
