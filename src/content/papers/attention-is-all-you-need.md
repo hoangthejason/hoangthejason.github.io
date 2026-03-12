@@ -13,7 +13,7 @@ method: Replace recurrence with self-attention and stacked encoder-decoder block
 results: Strong machine translation performance with significantly better parallelism.
 limitations: Quadratic attention cost with sequence length and limited discussion of long-context efficiency.
 notes: Foundational for modern sequence modeling.
-bibliography: ../references/references.bib
+bibliography: /src/content/references/references.bib
 tags:
   - transformers
   - deep-learning
