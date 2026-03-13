@@ -1,10 +1,44 @@
-<!doctype html>
+<!-- <!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
     <title>Content Manager</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+    <script defer src="https://unpkg.com/decap-cms@^3.10.1/dist/decap-cms.js"></script>
+    <style>
+      body { font-family: Inter, system-ui, sans-serif; }
+    </style>
+  </head>
+  <body></body>
+</html> -->
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Content Manager</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    
+    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+    
+    <script>
+      if (window.netlifyIdentity) {
+        // 1. Ép widget trỏ thẳng về API của Netlify thay vì tìm trên GitHub Pages
+        window.netlifyIdentity.init({
+          APIUrl: "https://meek-seahorse-ac6e3d.netlify.app/.netlify/identity"
+        });
+        
+        // 2. Tự động chuyển hướng mượt mà sau khi đăng nhập thành công
+        window.netlifyIdentity.on("init", user => {
+          if (!user) {
+            window.netlifyIdentity.on("login", () => {
+              document.location.href = "/admin/";
+            });
+          }
+        });
+      }
+    </script>
     <script defer src="https://unpkg.com/decap-cms@^3.10.1/dist/decap-cms.js"></script>
     <style>
       body { font-family: Inter, system-ui, sans-serif; }
