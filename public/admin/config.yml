@@ -15,6 +15,7 @@ collections:
   - name: "blog"
     label: "Blog"
     folder: "src/content/blog"
+    format: "frontmatter"
     create: true
     extension: "mdx"
     slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
@@ -40,6 +41,7 @@ collections:
   - name: "courses"
     label: "Courses"
     folder: "src/content/courses"
+    format: "frontmatter"
     create: true
     extension: "md"
     slug: "{{slug}}"
@@ -60,6 +62,7 @@ collections:
   - name: "research"
     label: "Research"
     folder: "src/content/research"
+    format: "frontmatter"
     create: true
     extension: "md"
     slug: "{{slug}}"
@@ -76,6 +79,7 @@ collections:
   - name: "papers"
     label: "Papers"
     folder: "src/content/papers"
+    format: "frontmatter"
     create: true
     extension: "md"
     slug: "{{slug}}"
@@ -97,6 +101,7 @@ collections:
   - name: "datasets"
     label: "Datasets"
     folder: "src/content/datasets"
+    format: "frontmatter"
     create: true
     extension: "md"
     slug: "{{slug}}"
